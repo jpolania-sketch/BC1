@@ -3,62 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Imagen Mensual Única</title>
+    <title>Tu billete celador del Mes</title>
     <style>
-        /* Estilo para que la imagen se vea elegante */
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
-        #contenedor-imagen { display: none; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; max-width: 90%; }
-        img { max-width: 100%; border-radius: 10px; height: auto; }
-        h2 { color: #333; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            background: #2c3e50; 
+            color: white;
+        }
+        #contenedor-imagen { 
+            display: none; 
+            background: #ffffff; 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5); 
+            text-align: center; 
+            max-width: 450px;
+            color: #333;
+        }
+        img { 
+            width: 100%; 
+            border-radius: 12px; 
+            height: auto; 
+            margin-top: 15px;
+        }
+        .mensaje-espera { text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
 
     <div id="contenedor-imagen">
-        <h2>Tu imagen de este mes:</h2>
+        <h2 id="titulo">¡Mi pequeño, tu billete celador de este mes!</h2>
         <div id="espacio-img"></div>
+        <p style="font-size: 0.9em; color: #666;">Guarda ésta imagen porque no se te va a volver a mostrar, vuelve en 30 días para descubrir, la dirección que nuestro Señor quiere darte.</p>
+    </div>
+
+    <div id="mensaje-bloqueo" class="mensaje-espera" style="display:none;">
+        <h1>¡Hola! 👋</h1>
+        <p>Mi pequeño, ya viste tu billete celador correspondiente a este periodo.</p>
+        <p>Regresa el siguiente mes para ver tu nuevo billete.</p>
     </div>
 
     <script>
-        // 1. COLOCA AQUÍ TUS 33 IMÁGENES
-        const IMAGENES = [
-           // "https://via.placeholder.com/600x400?text=Imagen+1",
-			"https://drive.google.com/file/d/1Pgrida02aiQFD5dKwGW__AgIynf9R6Y2/view?usp=drive_link",
-			"https://drive.google.com/file/d/1yRNC0hyHncwnJZ8GLUgqQ6An5OzYy1IX/view?usp=drive_link",
-          //  "https://via.placeholder.com/600x400?text=Imagen+2",
-            // ... agrega el resto hasta completar las 33
-        ];
-
-        function ejecutarLogicaMensual() {
+        function gestionarImagen() {
             const ultimaVisita = localStorage.getItem('fecha_ultima_imagen');
             const ahora = new Date().getTime();
             const TREINTA_DIAS = 30 * 24 * 60 * 60 * 1000;
 
-            // Verificamos si es la primera vez o si ya pasaron 30 días
             if (!ultimaVisita || (ahora - ultimaVisita) > TREINTA_DIAS) {
                 
-                // Elegir una imagen aleatoria
-                const indice = Math.floor(Math.random() * IMAGENES.length);
-                const imagenParaMostrar = IMAGENES[indice];
+                // Lógica para elegir un número aleatorio entre 1 y 33
+                const numeroImagen = Math.floor(Math.random() * 33) + 1;
+                // Como están en la misma carpeta, la ruta es solo el nombre
+                const rutaImagen = `${numeroImagen}.png`;
 
-                // Mostrar el contenedor y la imagen
-                document.getElementById('espacio-img').innerHTML = `<img src="${imagenParaMostrar}">`;
+                document.getElementById('espacio-img').innerHTML = `<img src="${rutaImagen}" alt="Imagen mensual">`;
                 document.getElementById('contenedor-imagen').style.display = 'block';
 
-                // GUARDAR LA FECHA ACTUAL para que no vuelva a salir en 30 días
+                // Guardar la fecha del día de hoy
                 localStorage.setItem('fecha_ultima_imagen', ahora);
-                
-                // Opcional: Guardar qué imagen se mostró para no repetirla seguido
-                localStorage.setItem('indice_mostrado', indice);
 
             } else {
-                // Si no han pasado 30 días, mostramos un mensaje o nada
-                document.body.innerHTML = "<h1>Vuelve en 30 días para ver una nueva imagen.</h1>";
+                // Mostrar mensaje de que debe esperar
+                document.getElementById('mensaje-bloqueo').style.display = 'block';
             }
         }
 
-        // Ejecutar al cargar la página
-        window.onload = ejecutarLogicaMensual;
+        window.onload = gestionarImagen;
     </script>
 </body>
 </html>
+
