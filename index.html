@@ -3,52 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tu billete celador del Mes</title>
+    <title>¡Tu billete celador de este mes!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-            background: #2c3e50; 
-            color: white;
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; margin: 0; background: #1a1a2e; color: white;
         }
         #contenedor-imagen { 
-            display: none; 
-            background: #ffffff; 
-            padding: 25px; 
-            border-radius: 20px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5); 
-            text-align: center; 
-            max-width: 450px;
-            color: #333;
+            display: none; background: white; padding: 20px; 
+            border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+            text-align: center; max-width: 400px; color: #333;
         }
-        img { 
-            width: 100%; 
-            border-radius: 12px; 
-            height: auto; 
-            margin-top: 15px;
+        img { width: 100%; border-radius: 15px; margin: 15px 0; border: 1px solid #eee; }
+        
+        /* Estilo de los botones */
+        .botones-container { display: flex; justify-content: space-around; margin-top: 15px; }
+        .btn {
+            text-decoration: none; padding: 10px 15px; border-radius: 8px;
+            font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s;
+            border: none; display: flex; align-items: center; gap: 8px;
         }
-        .mensaje-espera { text-align: center; padding: 20px; }
+        .btn-descargar { background: #007bff; color: white; }
+        .btn-compartir { background: #25d366; color: white; }
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+
+        #mensaje-bloqueo { text-align: center; }
     </style>
 </head>
 <body>
 
     <div id="contenedor-imagen">
-        <h2 id="titulo">¡Mi pequeño, tu billete celador de este mes!</h2>
+        <h2 style="margin:0;">🎁 ¡Mi pequeño, este es tu billete celador de este mes!</h2>
         <div id="espacio-img"></div>
-        <p style="font-size: 0.9em; color: #666;">Guarda esta imagen porque no se te va a volver a mostrar, vuelve en 30 días para descubrir la dirección que nuestro Señor quiere darte.</p>
+        
+        <div class="botones-container">
+            <a id="link-descarga" href="#" download class="btn btn-descargar">
+                <i class="fas fa-download"></i> Guardar
+            </a>
+            <button onclick="compartir()" class="btn btn-compartir">
+                <i class="fab fa-whatsapp"></i> Compartir
+            </button>
+        </div>
     </div>
 
-    <div id="mensaje-bloqueo" class="mensaje-espera" style="display:none;">
-        <h1>¡Hola! 👋</h1>
+    <div id="mensaje-bloqueo" style="display:none;">
+        <h1>⏳</h1>
+        <h2>Contenido reservado</h2>
         <p>Mi pequeño, ya viste tu billete celador correspondiente a este periodo.</p>
         <p>Regresa el siguiente mes para ver tu nuevo billete.</p>
     </div>
 
     <script>
+        let urlImagenActual = "";
+
         function gestionarImagen() {
             const ultimaVisita = localStorage.getItem('fecha_ultima_imagen');
             const ahora = new Date().getTime();
@@ -56,27 +65,31 @@
 
             if (!ultimaVisita || (ahora - ultimaVisita) > TREINTA_DIAS) {
                 
-                // Lógica para elegir un número aleatorio entre 1 y 33
                 const numeroImagen = Math.floor(Math.random() * 33) + 1;
-                // Como están en la misma carpeta, la ruta es solo el nombre
-                const rutaImagen = `${numeroImagen}.png`;
+                urlImagenActual = `${numeroImagen}.png`;
 
-                document.getElementById('espacio-img').innerHTML = `<img src="${rutaImagen}" alt="Imagen mensual">`;
+                // Insertar imagen
+                document.getElementById('espacio-img').innerHTML = `<img src="${urlImagenActual}" id="img-principal">`;
+                
+                // Configurar link de descarga
+                document.getElementById('link-descarga').href = urlImagenActual;
+                
                 document.getElementById('contenedor-imagen').style.display = 'block';
-
-                // Guardar la fecha del día de hoy
                 localStorage.setItem('fecha_ultima_imagen', ahora);
 
             } else {
-                // Mostrar mensaje de que debe esperar
                 document.getElementById('mensaje-bloqueo').style.display = 'block';
             }
+        }
+
+        function compartir() {
+            const texto = "¡Mira mi billete que me tocó este mes! 📸";
+            const urlWeb = window.location.href;
+            // Abre WhatsApp con un mensaje predefinido
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto + " " + urlWeb)}`, '_blank');
         }
 
         window.onload = gestionarImagen;
     </script>
 </body>
 </html>
-
-
-
