@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imagen Mensual Única</title>
+    <style>
+        /* Estilo para que la imagen se vea elegante */
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+        #contenedor-imagen { display: none; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center; max-width: 90%; }
+        img { max-width: 100%; border-radius: 10px; height: auto; }
+        h2 { color: #333; }
+    </style>
+</head>
+<body>
+
+    <div id="contenedor-imagen">
+        <h2>Tu imagen de este mes:</h2>
+        <div id="espacio-img"></div>
+    </div>
+
+    <script>
+        // 1. COLOCA AQUÍ TUS 33 IMÁGENES
+        const IMAGENES = [
+           // "https://via.placeholder.com/600x400?text=Imagen+1",
+			"https://drive.google.com/file/d/1Pgrida02aiQFD5dKwGW__AgIynf9R6Y2/view?usp=drive_link",
+			"https://drive.google.com/file/d/1yRNC0hyHncwnJZ8GLUgqQ6An5OzYy1IX/view?usp=drive_link",
+          //  "https://via.placeholder.com/600x400?text=Imagen+2",
+            // ... agrega el resto hasta completar las 33
+        ];
+
+        function ejecutarLogicaMensual() {
+            const ultimaVisita = localStorage.getItem('fecha_ultima_imagen');
+            const ahora = new Date().getTime();
+            const TREINTA_DIAS = 30 * 24 * 60 * 60 * 1000;
+
+            // Verificamos si es la primera vez o si ya pasaron 30 días
+            if (!ultimaVisita || (ahora - ultimaVisita) > TREINTA_DIAS) {
+                
+                // Elegir una imagen aleatoria
+                const indice = Math.floor(Math.random() * IMAGENES.length);
+                const imagenParaMostrar = IMAGENES[indice];
+
+                // Mostrar el contenedor y la imagen
+                document.getElementById('espacio-img').innerHTML = `<img src="${imagenParaMostrar}">`;
+                document.getElementById('contenedor-imagen').style.display = 'block';
+
+                // GUARDAR LA FECHA ACTUAL para que no vuelva a salir en 30 días
+                localStorage.setItem('fecha_ultima_imagen', ahora);
+                
+                // Opcional: Guardar qué imagen se mostró para no repetirla seguido
+                localStorage.setItem('indice_mostrado', indice);
+
+            } else {
+                // Si no han pasado 30 días, mostramos un mensaje o nada
+                document.body.innerHTML = "<h1>Vuelve en 30 días para ver una nueva imagen.</h1>";
+            }
+        }
+
+        // Ejecutar al cargar la página
+        window.onload = ejecutarLogicaMensual;
+    </script>
+</body>
+</html>
